@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/styles/stackoverflow-dark.min.css"
+    />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+
+      li {
+        list-style: none;
+      }
+
+      a {
+        color: #333;
+        text-decoration: none;
+      }
+
+      code * {
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 12px;
+        line-height: 1.6em;
+      }
+
+      html {
+        height: 100%;
+        /* padding: 30px; */
+        background-color: #f2f3f5;
+      }
+      body {
+        /* height: 100%; */
+        padding: 30px 0;
+        width: 1200px;
+        margin: 0 auto;
+      }
+
+      .mb-10 {
+        margin-bottom: 10px;
+      }
+
+      .mb-20 {
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        /* font-size: 20px; */
+        margin-bottom: 10px;
+      }
+      .title {
+        padding-bottom: 12px;
+        border-bottom: 1px solid #ececec;
+        margin-bottom: 20px;
+      }
+      .nav {
+        position: fixed;
+        right: 30px;
+        top: 30px;
+        min-width: 200px;
+        padding: 30px 0;
+        background-color: #fff;
+        box-shadow: 1px 2px 25px -2px rgba(0, 0, 0, 0.1);
+      }
+      .nav li {
+        position: relative;
+        /* padding: 2px 0; */
+        padding: 0 10px;
+        margin-bottom: 2px;
+        margin-left: 10px;
+        font-size: 14px;
+      }
+      .nav li.active::after {
+        position: absolute;
+        content: "";
+        left: -10px;
+        width: 4px;
+        height: 100%;
+        background-color: #1e80ff;
+      }
+      .main {
+        padding: 30px 40px;
+        background-color: #fff;
+        box-shadow: 1px 2px 25px -2px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <ul class="nav">
+      <li class="active"><a href="#工厂模式">1.工厂模式</a></li>
+      <li><a href="#单例模式">2.单例模式</a></li>
+      <li><a href="#观察者模式">3.观察者模式</a></li>
+      <li><a href="#发布订阅模式">4.发布订阅模式</a></li>
+      <li><a href="#适配器模式">5.适配器模式</a></li>
+      <li><a href="#装饰器模式">6.装饰器模式</a></li>
+      <li><a href="#享元模式">7.享元模式</a></li>
+      <li><a href="#策略模式">8.策略模式</a></li>
+      <li><a href="#组合模式">9.组合模式</a></li>
+      <li><a href="#代理模式">10.代理模式</a></li>
+      <li><a href="#命令模式">11.命令模式</a></li>
+      <li><a href="#职责链模式">12.职责链模式</a></li>
+      <li><a href="#模板方法模式">13.模板方法模式</a></li>
+    </ul>
+    <div class="main">
+      <h1 class="mb-20">前端设计模式</h1>
+      <div class="content">
+        <h2 class="title" id="工厂模式">1.工厂模式</h2>
+        <p class="mb-20">
+          工厂模式就像是流水线，将材料（参数）放进去，给你返回一个加工好的产品（实例对象）
+          一个调用者想创建一个对象，只要知道其名称就可以了。
+          扩展性高，如果想增加一个产品，只要扩展一个工厂类就可以。
+          屏蔽产品的具体实现，调用者只关心产品的接口。
+          在前端开发中，工厂模式可以用于创建复杂的组件、封装第三方库等场景。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+        class Dog {
+          name = '旺财';
+          age = 1;
+        }
+        
+        class Cat {
+          name = '可乐';
+          age = 2;
+        }
+        
+        class Animal {
+          createProduct(type) {
+            switch (type) {
+              case 'Dog':
+                return new Dog();
+              case 'Cat':
+                return new Cat();
+              default:
+                throw new Error('Invalid type.');
+            }
+          }
+        }
+        
+        const animal = new Animal();
+        const animalA = animal.createProduct('Dog');
+        const animalB = animal.createProduct('Cat');
+        
+        console.log(animalA); // Concrete Dog { name: '旺财', price: 1 }
+        console.log(animalB); // Concrete Cat { name: '可乐', price: 2 } 
+      </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="单例模式">2.单例模式</h2>
+        <p class="mb-20">
+          单例模式它限制了类的实例化次数只能一次，下次在次获取就从内存里获取。在前端开发中，单例模式可以用于管理全局状态、缓存数据等场景，像
+          node 的 require 就是使用了此模式。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+        class Animal {
+          constructor(name) {
+            this.name = name;
+          }
+        }
+        class Single {
+          constructor(func) {
+            let instance;
+            return function (args) {
+              return instance || (instance = new func(args));
+            };
+          }
+        }
+        let single = new Single(Animal),
+        animal1 = new single("可乐"),
+        animal2 = new single("旺财");
+        console.log(animal1 === animal2); // true
+      </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="观察者模式">3.观察者模式</h2>
+        <p class="mb-20">
+          观察者（Observer）定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。在前端开发中，观察者模式常用于实现深层次组件之间的通信和数据更新。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+        class ConcreteSubject {
+          constructor(name) {
+            this.observers = [];
+          }
+      
+          addObserver(observer) {
+            this.observers.push(observer);
+          }
+      
+          removeObserver(observer) {
+            this.observers = this.observers.filter((item) => item !== observer);
+          }
+      
+          notifyObservers(data) {
+            this.observers.forEach((observer) => observer.update(data));
+          }
+        }
+      
+        class ConcreteObserver {
+          constructor(name) {
+            this.name = name;
+          }
+          update(data) {
+            console.log(`${this.name} Received data: ${data}`);
+          }
+        }
+      
+        const subject = new ConcreteSubject();
+        const observer1 = new ConcreteObserver("observer1");
+        const observer2 = new ConcreteObserver("observer2");
+      
+        subject.addObserver(observer1);
+        subject.addObserver(observer2);
+        subject.notifyObservers("Hello World!");
+        subject.removeObserver(observer2);
+        subject.notifyObservers("Hello!");
+      </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="发布订阅模式">4.发布订阅模式</h2>
+        <p class="mb-20">
+          发布订阅模式它定义了一对多的依赖关系，发布订阅模式中的发布者和订阅者之间没有直接的联系，而是通过一个消息代理（或称为事件中心）来进行通信。当发布者发布消息时，消息代理会将消息广播给符合条件的订阅者，订阅者收到消息后执行相应的操作。<br />
+          个人理解和观察者模式区别就在于只需要一个事件中心，就可以通知到符合到各种需求场景的订阅者(不需要生成多个
+          Observer
+          或者观察者再次内部判断是否执行)。在前端开发中，可以用于状态库(redux,
+          bus)和websocket消息通知。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+        class EventEmitter {
+          events = {};
+      
+          on(eventName, callback) {
+            if (!this.events[eventName]) {
+              this.events[eventName] = [];
+            }
+            this.events[eventName].push(callback);
+          }
+      
+          emit(eventName, ...args) {
+            const callbacks = this.events[eventName];
+            callbacks &&
+              callbacks.forEach((callback) => {
+                callback(...args);
+              });
+          }
+      
+          off(eventName, callback) {
+            const callbacks = this.events[eventName];
+            if (callbacks) {
+              this.events[eventName] = callbacks.filter((cb) => cb !== callback);
+            }
+          }
+        }
+      
+        const emitter = new EventEmitter();
+        const event1Fn = (arg1) => {
+          console.log(`event1 参数1:${arg1}`);
+        };
+        emitter.on("event1", event1Fn);
+      
+        emitter.on("event2", (arg1, arg2) => {
+          console.log(`event2 参数1: ${arg1}, 参数2: ${arg2}`);
+        });
+      
+        emitter.emit("event1", "张三");
+        emitter.emit("event2", "李四", "王五");
+      
+        emitter.off("event1", event1Fn);
+      
+        emitter.emit("event1", "foo");
+      </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="适配器模式">5.适配器模式</h2>
+        <p class="mb-20">
+          适配器模式它可以将一个类的接口转换成客户端所期望的另一种接口，从而使原本不兼容的类能够一起工作。在前端开发中，适配器模式可以用于兼容不同版本的
+          API、封装第三方组件等场景
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+        const https = (options) => {
+          options.type = options.type || "GET";
+          if (typeof $ !== "undefined") {
+            console.log("我进来了");
+            options.type = options.type.toUpperCase();
+            $.ajax({
+              // type: "GET",
+              // url: "/xxxx", //请求的地址
+              // data: { name: "李白", age: 18 }, //发送至服务器的对象数据
+              dataType: "json", //服务器端返回的数据格式
+              success: function (data) {
+                //请求成功时的回调函数
+                console.log(data);
+                options?.success(data);
+              },
+              ...options,
+            });
+          } else if (typeof axios !== "undefined") {
+            options.type = options.type.toLowerCase();
+            axios({
+              method: options.type,
+              url: options.url,
+              data:
+                options.type === "get" ? { params: options?.data } : options?.data,
+            })
+              .then((res) => {
+                options?.success(res);
+              })
+              .catch((err) => {
+                options?.error(err);
+              });
+          } else {
+            const xhr = new XMLHttpRequest();
+            xhr.open(options.type.toUpperCase(), options.url,true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send(JSON.stringify(options.data || {}));
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4) {
+                const data = JSON.parse(xhr.response || "{}");
+                if (xhr.status === 200) {
+                  options?.success(data);
+                } else {
+                  options?.error(data);
+                }
+              }
+            };
+          }
+        };
+      
+        https({
+          type: "post",
+          url: "https://xxx",
+          data: { username: "admin", password: "000000" },
+          success: (res) => {
+            console.log(res, "success");
+          },
+          error: (res) => {
+            console.log(res, "error");
+          },
+        });
+      </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="装饰器模式">6.装饰器模式</h2>
+        <p class="mb-20">
+          装饰器模式是指在不改变原有对象结构的情况下，动态地给对象增加一些额外功能的职责。属于对象结构型模式。在前端开发中，装饰器模式可以用于传递的数据需要对字段进行校验、新增接口等等功能。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+        class Animal {
+          create() {
+            console.log("创建一个动物");
+          }
+          run() {
+            console.log("我可以跑");
+          }
+        }
+        class Cat {
+          constructor(Animal, name) {
+            this.Animal = Animal;
+            this.name = "可乐";
+          }
+          create() {
+            this.Animal.create();
+            this.Animal.run();
+            this.eat();
+            this.sayHi();
+          }
+          eat() {
+            console.log(this.name + "喜欢吃猫粮");
+          }
+          eat() {
+            console.log(this.name + "喜欢吃猫粮");
+          }
+          sayHi() {
+            console.log('喜欢和靓仔主人打招呼')
+          }
+        }
+        const cat = new Cat(new Animal);
+        cat.create();
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="享元模式">7.享元模式</h2>
+        <p class="mb-20">
+          享元模式将对象分为内部状态和外部状态，内部状态可以被共享，而外部状态则需要在使用时传入。在前端开发中，享元模式可以用于优化大量相似对象的创建和管理，例如在
+          Canvas 中绘制大量图形时，可以使用享元模式来共享相同的图形元素。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          // 假设一个猫的网店需要猫咪试穿衣服拍10个照片来吸引客户
+          // 正常情况下是 new 10个猫出来穿衣拍照
+          function CatA(name, commodity) {
+            this.name = name;
+            this.commodity = commodity;
+          }
+          CatA.prototype.takePhotos = function () {
+            console.log(`name:${this.name}, commodity: ${this.commodity}`);
+          };
+          for (let i = 0; i < 10; i++) {
+            const cat = new CatA("可乐", "靓仔衣服" + i);
+            cat.takePhotos();
+          }
+          // 上面是10个猫咪即可完成,可是也可以看出需要10个猫, 那如果是除了衣服, 包括猫砂,猫粮,猫包等共100件甚至1万件商品时
+          // 那么就没有那么猫咪来出场拍照了,此时如果用享元模式, 那么1只猫就可以完成所有拍摄了
+          function CatB(name,commodity) {
+            this.name = name;
+            this.commodity = commodity;
+          }
+          CatB.prototype.takePhotos = function () {
+            console.log(`name:${this.name}, commodity: ${this.commodity}`);
+          };
+        
+          const cat = new CatB("可乐");
+          for (let i = 0; i < 100; i++) {
+            cat.commodity = "commodity" + i;
+            cat.takePhotos();
+          }
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="策略模式">8.策略模式</h2>
+        <p class="mb-20">
+          策略模式让算法的变化独立于使用它们的客户端，从而可以在不修改客户端的情况下动态地切换算法。在前端开发中，策略模式可以用于实现表单验证、排序算法、动画效果等场景。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          // 定义一个计算税费的策略类
+          class TaxStrategy {
+            constructor(strategy) {
+              this.strategy = strategy
+            }
+            
+            getTax(amount) {
+              return this.strategy(amount)
+            }
+          }
+           
+          // 策略函数1：50%税率
+          function lowTax(amount) {
+            return amount * 0.5
+          }
+           
+          // 策略函数2：30%税率
+          function midTax(amount) {
+            return amount * 0.3
+          }
+           
+          // 策略函数3：10%税率
+          function highTax(amount) {
+            return amount * 0.1
+          }
+           
+          // 创建不同的策略类实例
+          const lowTaxStrategy = new TaxStrategy(lowTax)
+          const midTaxStrategy = new TaxStrategy(midTax)
+          const highTaxStrategy = new TaxStrategy(highTax)
+           
+          // 使用策略类对象计算税费
+          const amount = 10000
+           
+          console.log(`税前收入：${amount}元`)
+          console.log(`税后收入(50%税率)：${lowTaxStrategy.getTax(amount)}元`)
+          console.log(`税后收入(30%税率)：${midTaxStrategy.getTax(amount)}元`)
+          console.log(`税后收入(10%税率)：${highTaxStrategy.getTax(amount)}元`)
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="组合模式">9.组合模式</h2>
+        <p class="mb-20">
+          组合模式又叫 “部分整体” 模式，将对象组合成树形结构，以表示 “部分-整体”
+          的层次结构。通过对象的多态性表现，使得用户对单个对象和组合对象的使用具有一致性。在前端开发中，组合模式可以用于实现菜单、树形控件等场景。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          /******************************* Folder ******************************/
+          var Folder = function (name) {
+            this.name = name;
+            this.files = [];
+          };
+        
+          Folder.prototype.add = function (file) {
+            this.files.push(file);
+          };
+        
+          Folder.prototype.scan = function () {
+            console.log("开始扫描文件夹 " + this.name);
+            for (var i = 0, file, files = this.files; (file = files[i++]); ) {
+              file.scan();
+            }
+          };
+        
+          /******************************* File ******************************/
+          var File = function (name) {
+            this.name = name;
+          };
+        
+          File.prototype.add = function () {
+            throw new Error("文件下面不能再添加文件");
+          };
+          File.prototype.scan = function () {
+            console.log("开始扫描文件 " + this.name);
+          };
+        
+          var folder = new Folder("学习资料");
+          var folder1 = new Folder("JavaScript");
+          var folder2 = new Folder("jQuery");
+        
+          var file1 = new File("JavaScript设计模式与开发实践");
+          var file2 = new File("精通jQuery");
+          var file3 = new File("重构与模式");
+        
+          folder1.add(file1);
+          folder2.add(file2);
+        
+          folder.add(folder1);
+          folder.add(folder2);
+          folder.add(file3);
+          folder.scan()
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="代理模式">10.代理模式</h2>
+        <p class="mb-20">
+          代理模式是为一个对象提供一个代用品或占位符，以便控制对它的访问。比如，明星都有经纪人作为代理。如果想请明星来办一场商业演出，只能联系他的经纪人。经纪人会把商业演出的细节和报酬都谈好之后，再把合同交给明星签。<br />
+          优点<br />
+          1. 可以保护对象<br />
+          2. 优化性能，减少开销很大的对象<br />
+          3. 缓存结果<br />
+          在前端开发中，代理模式可以用于实现图片懒加载、缓存数据、控制访问权限等场景。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          class MingXing {
+            show() {
+              console.log("演出");
+            }
+          }
+        
+          class Broker {
+            constructor() {
+              this.superStar = new MingXing();
+            }
+            show() {
+              this.superStar.show();
+            }
+          }
+        
+          let broker = new Broker();
+          broker.show();
+
+
+          <!-- 事件委托: 优化性能，减少开销很大的对象 -->
+            let ul = document.getElementById('ul');
+          
+          
+            ul.addEventListener('click', function(e) {
+              if (e.target && e.target.nodeName === 'LI') {
+                let item = e.target;
+                alert('you clicked on item: ' + item.innerHTML)
+              }
+            })
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="命令模式">11.命令模式</h2>
+        <p class="mb-20">
+          命令模式是有时候需要向某些对象发送请求，但是并不知道请求的接收者是谁，也不知道被请求的操作是什么。此时希望用一种松耦合的方式来设计程序，使得请求发送者和请求接收者能够消除彼此之间的耦合关系。
+          在前端开发中，命令模式可以成对象，从而使得可以用不同的请求对客户端进行参数化。命令模式可以将请求的发送者和接收者解耦，使得请求的发送者不需要知道请求的接收。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          // 假设有3个按钮, 因为项目复杂，我们让A负责按钮的UI，B负责点击按钮后的具体行为，这些行为都将被封装在对象内。
+          var button1 = document.getElementById("button1");
+          var button2 = document.getElementById("button2");
+          var button3 = document.getElementById("button3");
+        
+          
+          function setCommand(button, command) {
+            button.onclick = function () {
+              command.execute();
+            };
+          }
+          // 以下是按钮功能
+          var MenuBar = {
+            refresh: function () {
+              console.log("刷新菜单目录");
+            },
+          };
+        
+          var SubMenu = {
+            add: function () {
+              console.log("增加子菜单");
+            },
+            del: function () {
+              console.log("删除子菜单");
+            },
+          };
+          // 在让button变得有用起来之前，我们要先把这些行为都封装在命令类中
+          var RefreshMenuBarCommand = function (receiver) {
+            this.receiver = receiver;
+          };
+          RefreshMenuBarCommand.prototype.execute = function () {
+            this.receiver.refresh();
+          };
+          var AddSubMenuCommand = function (receiver) {
+            this.receiver = receiver;
+          };
+          AddSubMenuCommand.prototype.execute = function () {
+            this.receiver.add();
+          };
+          var DelSubMenuCommand = function (receiver) {
+            this.receiver = receiver;
+          };
+          DelSubMenuCommand.prototype.execute = function () {
+            this.receiver.del();
+          };
+        
+          // 最后就是把命令接收者传入到command对象中，并且把command对象安装在button上面
+          var refreshMenuBarCommand = new RefreshMenuBarCommand(MenuBar);
+          var addSubMenuCommand = new AddSubMenuCommand(SubMenu);
+          var delSubMenuCommand = new DelSubMenuCommand(SubMenu);
+          setCommand(btn1, refreshMenuBarCommand);
+          setCommand(btn2, addSubMenuCommand);
+          setCommand(btn3, delSubMenuCommand);
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="职责链模式">12.职责链模式</h2>
+        <p class="mb-20">
+          职责链模式它将请求的发送者和接收者解耦，使得多个对象都有机会处理这个请求。将这些对象串成一条链，并沿着这条链传递请求，直到有一个对象处理它为止。在前端开发中，职责链模式可以用于处理用户输入、事件冒泡等场景。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          // 预付定金500的处理函数
+          function order500(orderType, pay, stock){
+            if(orderType === 1 && pay){
+              console.log('500元定金已付，获得100元优惠券');
+            } else {
+              return 'nextSuccessor';
+            }
+          }
+          
+          // 预付定金200的处理函数
+          function order200(orderType, pay, stock){
+            if(orderType === 2 && pay){
+              console.log('200元定金已付，获得50元优惠券');
+            } else {
+              return 'nextSuccessor';
+            }
+          }
+          
+          // 不预付定金的处理函数
+          function orderNormal(orderType, pay, stock){
+            if(stock > 0){
+              console.log('普通购买，暂无优惠券');
+            } else {
+              console.log('手机库存不足');
+            }
+          }
+          
+          // 构造函数，用来构造链中的节点
+          function Chain (fn){
+            this.fn = fn; // 当前处理的节点
+            this.successor = null; // 下一个处理的节点
+          }
+          
+          // 设置下一个处理的节点
+          Chain.prototype.setSuccessor = function (successor){
+            this.successor = successor;
+          }
+          
+          
+          // 传递请求给某个节点。统一规定当函数返回nextSuccessor时将请求传递给下一个函数
+          Chain.prototype.passRequest = function (){
+            let ret = this.fn.apply(this, arguments);
+            if(ret === 'nextSuccessor'){
+              console.log(this.successor,'---')
+              this.successor && this.successor.passRequest.apply(this.successor, arguments);
+            }
+            return ret;
+          }
+          
+          let chain500 = new Chain(order500);
+          let chain200 = new Chain(order200);
+          let chainNormal = new Chain(orderNormal);
+          chain500.setSuccessor(chain200);
+          chain200.setSuccessor(chainNormal);
+          
+          console.log(1,chain500.passRequest(1, true, 500));
+          console.log(2,chain500.passRequest(2, true, 500));
+          console.log(3,chain500.passRequest(0, true, 1));
+    </code></pre>
+      </div>
+
+      <div class="content">
+        <h2 class="title" id="模板方法模式">13.模板方法模式</h2>
+        <p class="mb-20">
+          模板方法模式定义了一个算法的骨架，将一些步骤延迟到子类中实现。模板方法模式使得子类可以在不改变算法结构的情况下重新定义算法中的某些步骤。在前端开发中，模板方法模式可以用于实现组件的生命周期(像主流的框架vue,react,angular等等都有生命周期)、异步请求等场景。
+        </p>
+        <pre class="mb-20"><code class="language-typescript">
+          
+  function CareFor() {}
+  CareFor.prototype.sweep = function () {
+    console.log("打扫");
+  };
+  // 喂食
+  CareFor.prototype.feed = function () {
+    console.log("子类必须重写feed方法");
+  };
+  // 添水
+  CareFor.prototype.watering = function () {
+    console.log("子类必须重写watering方法");
+  };
+  // 玩耍
+  CareFor.prototype.pay = function () {
+    console.log("子类必须重写pay方法");
+  };
+  // 是否玩耍
+  CareFor.prototype.isPay = function () {
+    // 默认是
+    return true;
+  };
+  CareFor.prototype.init = function () {
+    this.sweep();
+    this.feed();
+    this.watering();
+    if (this.isPay()) {
+      this.pay();
+    }
+  };
+
+  function Master() {}
+  Master.prototype = new CareFor();
+  Master.prototype.feed = function () {
+    console.log("给猫猫喂食猫罐头");
+  };
+  Master.prototype.watering = function () {
+    console.log("给猫水碗里添加水");
+  };
+  Master.prototype.pay = function () {
+    console.log("和猫猫一起玩逗猫棒");
+  };
+  Master.prototype.isPay = function () {
+    return window.confirm("请问要和猫猫一起玩耍吗？");
+  };
+  const master = new Master();
+  master.init();
+      
+    </code></pre>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", (event) => {
+        document.querySelectorAll("pre code").forEach((el) => {
+          hljs.highlightElement(el);
+        });
+      });
+    </script>
+  </body>
+</html>
+
+<script></script>
+
+<script>
+  window.onload = function () {
+    function isParent(currentElement, targetElement) {
+      console.log(currentElement === targetElement, 1);
+      if (!currentElement) {
+        return;
+      }
+      if (currentElement === targetElement) {
+        return true;
+      }
+
+      return isParent(currentElement.parentElement, targetElement);
+    }
+    const ulEl = document.querySelector(".nav");
+    ulEl.onclick = function (e) {
+      const target = e.target;
+      if (isParent(target, ulEl)) {
+        for (const key in ulEl.children) {
+          if (Object.hasOwnProperty.call(ulEl.children, key)) {
+            const node = ulEl.children[key];
+            node.classList.remove("active");
+            if (isParent(target, node)) {
+              node.classList.add("active");
+            }
+          }
+        }
+      }
+    };
+    const contentEl = document.querySelectorAll(".content");
+
+    // 监听滚动事件
+    document.addEventListener("scroll", function () {
+      contentEl.forEach((el, i) => {
+        console.log(el.getBoundingClientRect().top, 111);
+        const top = el.getBoundingClientRect().top;
+        if (top > 0 && top < 200) {
+          console.log(ulEl.children[i], "-- ulEl.children[i]");
+
+          for (const key in ulEl.children) {
+            if (Object.hasOwnProperty.call(ulEl.children, key)) {
+              ulEl.children[key].classList.remove("active");
+            }
+          }
+
+          ulEl.children[i].classList.add("active");
+        }
+      });
+    });
+  };
+</script>
